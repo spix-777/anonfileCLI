@@ -76,30 +76,7 @@ func fileInfo(infoStr string) {
 		WarnLogger.Println("Error getting file info:", infoStr)
 		return
 	}
-	// Get the short URL
-	reqStr := string(responseBody)
-	indexShort := strings.Index(reqStr, "short")
-	start := reqStr[indexShort+9:]
-	indexShort = strings.Index(start, `",`)
-	short := start[:indexShort]
-	out := strings.Replace(short, "\"}", "", -1)
-	out = strings.Replace(short, "\\", "", -1)
-	InfoLogger.Println("Short URL:", out)
-
-	// Get the size
-	indexSize := strings.Index(reqStr, "bytes")
-	start = reqStr[indexSize+7:]
-	indexSize = strings.Index(start, `,`)
-	size := start[:indexSize]
-	InfoLogger.Println("Size:", size+" bytes")
-
-	// Get the status
-	indexStatus := strings.Index(reqStr, "status")
-	start = reqStr[indexStatus+8:]
-	indexStatus = strings.Index(start, `,"`)
-	status := start[:indexStatus]
-	InfoLogger.Println("Status:", status)
-
+	jsonToInfo(responseBody)
 }
 
 func fileUpload(fileStr string) {
@@ -162,7 +139,26 @@ func fileUpload(fileStr string) {
 		WarnLogger.Println("Error reading response ...")
 		return
 	}
+	jsonToUpload(responseBody)
 
+}
+
+func banner() {
+	red := "\033[31m"
+	reset := "\033[0m"
+	love := red + "<3" + reset
+	banner := `                                             
+                          __ _ _           
+  __ _ _ __   ___  _ __  / _(_) | ___  ___ 
+ / _  |  _ \ / _ \| '_ \| |_| | |/ _ \/ __|
+| (_| | | | | (_) | | | |  _| | |  __/\__ \
+ \__,_|_| |_|\___/|_| |_|_| |_|_|\___||___/
+	`
+	BannerLogger.Print(banner)
+	BannerLogger.Println(strings.Repeat(" ", 23) + "made by " + love + " @SpiX-777")
+}
+
+func jsonToUpload(responseBody []byte) {
 	// Get the short URL
 	reqStr := string(responseBody)
 	reqStr = strings.ReplaceAll(reqStr, " ", "")
@@ -187,20 +183,31 @@ func fileUpload(fileStr string) {
 	indexID = strings.Index(start, `",`)
 	id := start[:indexID]
 	InfoLogger.Println("ID:", id)
-
 }
 
-func banner() {
-	red := "\033[31m"
-	reset := "\033[0m"
-	love := red + "<3" + reset
-	banner := `                                             
-                          __ _ _           
-  __ _ _ __   ___  _ __  / _(_) | ___  ___ 
- / _  |  _ \ / _ \| '_ \| |_| | |/ _ \/ __|
-| (_| | | | | (_) | | | |  _| | |  __/\__ \
- \__,_|_| |_|\___/|_| |_|_| |_|_|\___||___/
-	`
-	BannerLogger.Print(banner)
-	BannerLogger.Println(strings.Repeat(" ", 23) + "made by " + love + " @SpiX-777")
+func jsonToInfo(responseBody []byte) {
+	// Get the short URL
+	reqStr := string(responseBody)
+	indexShort := strings.Index(reqStr, "short")
+	start := reqStr[indexShort+9:]
+	indexShort = strings.Index(start, `",`)
+	short := start[:indexShort]
+	out := strings.Replace(short, "\"}", "", -1)
+	out = strings.Replace(short, "\\", "", -1)
+	InfoLogger.Println("Short URL:", out)
+
+	// Get the size
+	indexSize := strings.Index(reqStr, "bytes")
+	start = reqStr[indexSize+7:]
+	indexSize = strings.Index(start, `,`)
+	size := start[:indexSize]
+	InfoLogger.Println("Size:", size+" bytes")
+
+	// Get the status
+	indexStatus := strings.Index(reqStr, "status")
+	start = reqStr[indexStatus+8:]
+	indexStatus = strings.Index(start, `,"`)
+	status := start[:indexStatus]
+	InfoLogger.Println("Status:", status)
+
 }
