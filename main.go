@@ -165,18 +165,19 @@ func fileUpload(fileStr string) {
 
 	// Get the short URL
 	reqStr := string(responseBody)
+	reqStr = strings.ReplaceAll(reqStr, " ", "")
 	indexShort := strings.Index(reqStr, "short")
-	start := reqStr[indexShort+9:]
-	indexShort = strings.Index(start, `",`)
+	start := reqStr[indexShort+8:]
+	indexShort = strings.Index(start, `"`)
 	short := start[:indexShort]
 	out := strings.Replace(short, "\"}", "", -1)
 	out = strings.Replace(short, "\\", "", -1)
 	InfoLogger.Println("Short URL:", out)
 
 	// Get the size
-	indexSize := strings.Index(reqStr, "bytes")
-	start = reqStr[indexSize+8:]
-	indexSize = strings.Index(start, `,`)
+	indexSize := strings.Index(reqStr, "readable")
+	start = reqStr[indexSize+11:]
+	indexSize = strings.Index(start, `B`)
 	size := start[:indexSize]
 	InfoLogger.Println("Size:", size+" bytes")
 
@@ -186,6 +187,7 @@ func fileUpload(fileStr string) {
 	indexID = strings.Index(start, `",`)
 	id := start[:indexID]
 	InfoLogger.Println("ID:", id)
+
 }
 
 func banner() {
